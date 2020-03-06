@@ -1,6 +1,6 @@
-﻿namespace WindowsFormsApp1
+﻿namespace TerminalApp
 {
-    partial class Form1
+    partial class Main
     {
         /// <summary>
         /// Обязательная переменная конструктора.

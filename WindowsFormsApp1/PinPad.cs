@@ -1,7 +1,7 @@
 ﻿using SBRFSRV;
 using System;
 
-namespace WindowsFormsApp1
+namespace TerminalApp
 {
     class PinPad
     {
