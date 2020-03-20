@@ -89,9 +89,14 @@ namespace TerminalApp
             fR.OpenSession();
         }
 
-        private void addProductB_Click(object sender, EventArgs e)
+        private void добавитьТоварToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new Products().ShowDialog();
+        }
+
+        private void beepB_Click(object sender, EventArgs e)
+        {
+            fR.Beep();
         }
     }
 }

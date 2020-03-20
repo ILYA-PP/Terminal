@@ -39,6 +39,12 @@ namespace TerminalApp
             if (Driver.Connect() != 0)
                 AddLog();
         }
+        public void Beep()
+        {
+            if (Driver.Connect() == 0)
+                Driver.Beep();
+            AddLog();
+        }
         private void AddLog()
         {
             if(List != null)

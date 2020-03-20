@@ -42,12 +42,16 @@
             this.propertiesB = new System.Windows.Forms.Button();
             this.openSessionB = new System.Windows.Forms.Button();
             this.closeSessionB = new System.Windows.Forms.Button();
-            this.addProductB = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.добавитьТоварToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.beepB = new System.Windows.Forms.Button();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // payB
             // 
-            this.payB.Location = new System.Drawing.Point(12, 51);
+            this.payB.Location = new System.Drawing.Point(12, 78);
             this.payB.Name = "payB";
             this.payB.Size = new System.Drawing.Size(75, 23);
             this.payB.TabIndex = 0;
@@ -58,7 +62,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Location = new System.Drawing.Point(12, 36);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 1;
@@ -66,14 +70,14 @@
             // 
             // sumTB
             // 
-            this.sumTB.Location = new System.Drawing.Point(12, 25);
+            this.sumTB.Location = new System.Drawing.Point(12, 52);
             this.sumTB.Name = "sumTB";
             this.sumTB.Size = new System.Drawing.Size(209, 20);
             this.sumTB.TabIndex = 2;
             // 
             // closeDayB
             // 
-            this.closeDayB.Location = new System.Drawing.Point(107, 51);
+            this.closeDayB.Location = new System.Drawing.Point(107, 78);
             this.closeDayB.Name = "closeDayB";
             this.closeDayB.Size = new System.Drawing.Size(114, 23);
             this.closeDayB.TabIndex = 3;
@@ -83,7 +87,7 @@
             // 
             // printChequeB
             // 
-            this.printChequeB.Location = new System.Drawing.Point(12, 201);
+            this.printChequeB.Location = new System.Drawing.Point(12, 243);
             this.printChequeB.Name = "printChequeB";
             this.printChequeB.Size = new System.Drawing.Size(110, 23);
             this.printChequeB.TabIndex = 4;
@@ -94,7 +98,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(249, 9);
+            this.label2.Location = new System.Drawing.Point(519, 36);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(29, 13);
             this.label2.TabIndex = 5;
@@ -103,14 +107,14 @@
             // logLB
             // 
             this.logLB.FormattingEnabled = true;
-            this.logLB.Location = new System.Drawing.Point(252, 25);
+            this.logLB.Location = new System.Drawing.Point(522, 52);
             this.logLB.Name = "logLB";
-            this.logLB.Size = new System.Drawing.Size(281, 173);
+            this.logLB.Size = new System.Drawing.Size(281, 316);
             this.logLB.TabIndex = 6;
             // 
             // printXReportB
             // 
-            this.printXReportB.Location = new System.Drawing.Point(12, 230);
+            this.printXReportB.Location = new System.Drawing.Point(12, 272);
             this.printXReportB.Name = "printXReportB";
             this.printXReportB.Size = new System.Drawing.Size(110, 23);
             this.printXReportB.TabIndex = 7;
@@ -120,7 +124,7 @@
             // 
             // printZReportB
             // 
-            this.printZReportB.Location = new System.Drawing.Point(12, 259);
+            this.printZReportB.Location = new System.Drawing.Point(12, 301);
             this.printZReportB.Name = "printZReportB";
             this.printZReportB.Size = new System.Drawing.Size(110, 23);
             this.printZReportB.TabIndex = 8;
@@ -130,16 +134,16 @@
             // 
             // chequeBodyTB
             // 
-            this.chequeBodyTB.Location = new System.Drawing.Point(252, 222);
+            this.chequeBodyTB.Location = new System.Drawing.Point(235, 52);
             this.chequeBodyTB.Name = "chequeBodyTB";
-            this.chequeBodyTB.Size = new System.Drawing.Size(281, 122);
+            this.chequeBodyTB.Size = new System.Drawing.Size(281, 316);
             this.chequeBodyTB.TabIndex = 9;
             this.chequeBodyTB.Text = "";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(249, 206);
+            this.label3.Location = new System.Drawing.Point(232, 36);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(61, 13);
             this.label3.TabIndex = 10;
@@ -147,7 +151,7 @@
             // 
             // propertiesB
             // 
-            this.propertiesB.Location = new System.Drawing.Point(12, 321);
+            this.propertiesB.Location = new System.Drawing.Point(12, 348);
             this.propertiesB.Name = "propertiesB";
             this.propertiesB.Size = new System.Drawing.Size(110, 23);
             this.propertiesB.TabIndex = 11;
@@ -157,7 +161,7 @@
             // 
             // openSessionB
             // 
-            this.openSessionB.Location = new System.Drawing.Point(12, 105);
+            this.openSessionB.Location = new System.Drawing.Point(12, 132);
             this.openSessionB.Name = "openSessionB";
             this.openSessionB.Size = new System.Drawing.Size(110, 23);
             this.openSessionB.TabIndex = 12;
@@ -167,7 +171,7 @@
             // 
             // closeSessionB
             // 
-            this.closeSessionB.Location = new System.Drawing.Point(12, 134);
+            this.closeSessionB.Location = new System.Drawing.Point(12, 161);
             this.closeSessionB.Name = "closeSessionB";
             this.closeSessionB.Size = new System.Drawing.Size(110, 23);
             this.closeSessionB.TabIndex = 13;
@@ -175,22 +179,47 @@
             this.closeSessionB.UseVisualStyleBackColor = true;
             this.closeSessionB.Click += new System.EventHandler(this.closeSessionB_Click);
             // 
-            // addProductB
+            // menuStrip1
             // 
-            this.addProductB.Location = new System.Drawing.Point(128, 321);
-            this.addProductB.Name = "addProductB";
-            this.addProductB.Size = new System.Drawing.Size(101, 23);
-            this.addProductB.TabIndex = 14;
-            this.addProductB.Text = "Добавить товар";
-            this.addProductB.UseVisualStyleBackColor = true;
-            this.addProductB.Click += new System.EventHandler(this.addProductB_Click);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.файлToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(815, 24);
+            this.menuStrip1.TabIndex = 15;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // файлToolStripMenuItem
+            // 
+            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.добавитьТоварToolStripMenuItem});
+            this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
+            this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.файлToolStripMenuItem.Text = "Файл";
+            // 
+            // добавитьТоварToolStripMenuItem
+            // 
+            this.добавитьТоварToolStripMenuItem.Name = "добавитьТоварToolStripMenuItem";
+            this.добавитьТоварToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.добавитьТоварToolStripMenuItem.Text = "Добавить товар";
+            this.добавитьТоварToolStripMenuItem.Click += new System.EventHandler(this.добавитьТоварToolStripMenuItem_Click);
+            // 
+            // beepB
+            // 
+            this.beepB.Location = new System.Drawing.Point(87, 201);
+            this.beepB.Name = "beepB";
+            this.beepB.Size = new System.Drawing.Size(110, 23);
+            this.beepB.TabIndex = 16;
+            this.beepB.Text = "Проверка связи";
+            this.beepB.UseVisualStyleBackColor = true;
+            this.beepB.Click += new System.EventHandler(this.beepB_Click);
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(543, 356);
-            this.Controls.Add(this.addProductB);
+            this.ClientSize = new System.Drawing.Size(815, 374);
+            this.Controls.Add(this.beepB);
             this.Controls.Add(this.closeSessionB);
             this.Controls.Add(this.openSessionB);
             this.Controls.Add(this.propertiesB);
@@ -205,8 +234,12 @@
             this.Controls.Add(this.sumTB);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.payB);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -228,7 +261,10 @@
         private System.Windows.Forms.Button propertiesB;
         private System.Windows.Forms.Button openSessionB;
         private System.Windows.Forms.Button closeSessionB;
-        private System.Windows.Forms.Button addProductB;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem добавитьТоварToolStripMenuItem;
+        private System.Windows.Forms.Button beepB;
     }
 }
 
