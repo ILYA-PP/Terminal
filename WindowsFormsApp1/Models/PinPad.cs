@@ -1,10 +1,12 @@
 ﻿using SBRFSRV;
 using System;
+using DrvFRLib;
 
 namespace TerminalApp
 {
     class PinPad
     {
+        //private DrvFR Driver;
         public static Server Server { get; set; }
         private enum Operations
         {
@@ -16,6 +18,8 @@ namespace TerminalApp
         }
         public PinPad()
         {
+            //Driver = new DrvFR();
+            //Driver.Password = 30;
             try
             {
                 if (Server == null)
@@ -28,6 +32,7 @@ namespace TerminalApp
             try
             { 
                 string cheque = Server.GParamString("Cheque");
+                Print(cheque);
                 return cheque;
             }
             catch (Exception ex) { return ex.Message; }
@@ -41,6 +46,21 @@ namespace TerminalApp
             }
             catch{ }
             return false;
+        }
+
+        public void Print(string cheque)
+        {
+            DrvFR Driver = new DrvFR();
+            Driver.ConnectionType = 6;
+            Driver.ProtocolType = 0;
+            Driver.IPAddress = "192.168.137.111";
+            Driver.UseIPAddress = true;
+
+            Driver.TCPPort = 7778;
+            Driver.Timeout = 1000;
+            Driver.Password = 30;
+            Driver.StringForPrinting = cheque;
+            Driver.PrintString();
         }
         public string Purchase(double sum)
         {
