@@ -11,10 +11,12 @@ namespace TerminalApp.Models
 
         public string Login { get; set; }
         public string Password { get; set; }
-        public User(string l, string p)
+        public string Role { get; set; }
+        public User(string l, string p, string r)
         {
             Login = l;
             Password = p;
+            Role = r;
         }
         public User() { }
     }

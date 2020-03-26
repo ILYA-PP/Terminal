@@ -19,6 +19,8 @@ namespace TerminalApp.Models
             if (user != null)
             {
                 MessageBox.Show("Вход выполнен!");
+                User.CurrentLogin = user.Login;
+                User.CurrentPassword = user.Password;
                 return true;
             }
             else
