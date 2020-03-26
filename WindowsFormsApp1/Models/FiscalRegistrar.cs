@@ -1,27 +1,23 @@
 ﻿using DrvFRLib;
 using System.Windows.Forms;
+using TerminalApp.Models;
 
 namespace TerminalApp
 {
-    class FR
+    class FiscalRegistrar
     {
-        private DrvFR Driver;
-        private ListBox List;
-        public FR(ListBox l)
+        private DrvFR Driver { get; set; }
+        private ListBox List { get; set; }
+        public FiscalRegistrar(ListBox l)
         {
             List = l;
-            Driver = new DrvFR();
-            AddLog();
-            Driver.ConnectionType = 6;
-            Driver.ProtocolType = 0;
-            Driver.IPAddress = "192.168.137.111";
-            Driver.UseIPAddress = true;
-            Driver.TCPPort = 7778;
-            Driver.Timeout = 1000;
-            Driver.Password = 30;
-            CheckConnect();
+            Connect();
         }
-        public FR()
+        public FiscalRegistrar()
+        {
+            Connect();
+        }
+        private void Connect()
         {
             Driver = new DrvFR();
             AddLog();
@@ -58,6 +54,7 @@ namespace TerminalApp
             Driver.PrintCliche();
             Driver.PrintDocumentTitle();
             Driver.PrintString();
+            Driver.PrintTrailer();
             Driver.CutCheck();
             AddLog();
         }
@@ -77,7 +74,6 @@ namespace TerminalApp
             Driver.ShowProperties();
             AddLog();
         }
-
         public void OpenSession()
         {
             Driver.FNOpenSession();
@@ -87,6 +83,32 @@ namespace TerminalApp
         {
             Driver.FNCloseSession();
             AddLog();
+        }
+
+        public User GetUser(int row)
+        {
+            User user = new User();
+            Driver.TableNumber = 2;
+            Driver.GetFieldStruct();
+            AddLog();
+            Driver.RowNumber = row;
+            Driver.FieldNumber = 1;
+            Driver.ReadTable();
+            user.Login = Driver.ValueOfFieldString;
+            AddLog();
+            Driver.RowNumber = row;
+            Driver.FieldNumber = 2;
+            Driver.ReadTable();
+            user.Password = Driver.ValueOfFieldString;
+            AddLog();
+            return user;
+        }
+
+        public int GetTableRowCount(int n)
+        {
+            Driver.TableNumber = n;
+            Driver.GetTableStruct();
+            return Driver.RowNumber;
         }
     }
 }

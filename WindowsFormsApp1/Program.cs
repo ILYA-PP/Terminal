@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using TerminalApp.Forms;
 
 namespace TerminalApp
 {
@@ -13,7 +14,7 @@ namespace TerminalApp
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            Application.Run(new Authorization());
         }
     }
 }

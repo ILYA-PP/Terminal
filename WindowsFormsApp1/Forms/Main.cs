@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Windows.Forms;
-using DrvFRLib;
-
 
 namespace TerminalApp
 {
     public partial class Main : Form
     {
         private PinPad pinPad;
-        private FR fR;
+        private FiscalRegistrar fR;
         public Main()
         {
             InitializeComponent();
-            fR = new FR(logLB);
-            //pinPad = new PinPad();
-            //if (!pinPad.IsEnabled())
-            //{
-            //    MessageBox.Show("Пинпад НЕ подключен!");
-            //    this.Close();
-            //}
+            try
+            {
+                fR = new FiscalRegistrar(logLB);
+                pinPad = new PinPad();
+                if (!pinPad.IsEnabled())
+                {
+                    MessageBox.Show("Пинпад НЕ подключен!");
+                    //this.Close();
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
         private void payB_Click(object sender, EventArgs e)
         {
@@ -27,7 +32,7 @@ namespace TerminalApp
                 if (sumTB.Text != "")
                 {
                     double sum = Math.Round(double.Parse(sumTB.Text), 2);
-                    MessageBox.Show(pinPad.Purchase(sum));
+                    pinPad.Purchase(sum);
                     if(pinPad.GetCheque() != null)
                         if (pinPad.GetCheque() != null)
                         MessageBox.Show(pinPad.GetCheque(), "Чек");
@@ -42,33 +47,12 @@ namespace TerminalApp
         }
         private void closeDayB_Click(object sender, EventArgs e)
         {
-            try
-            {
-                MessageBox.Show(pinPad.CloseDay());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка: {ex.Message}");
-            }
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            //pinPad.Cancel();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (chequeBodyTB.Text == "")
-                fR.PrintCheque("Тело чека");
-            else
-                fR.PrintCheque(chequeBodyTB.Text);
+            pinPad.CloseDay();
         }
         private void printXReportB_Click(object sender, EventArgs e)
         {
             fR.PrintXReport();
         }
-
         private void printZReportB_Click(object sender, EventArgs e)
         {
             fR.PrintZReport();
@@ -89,14 +73,17 @@ namespace TerminalApp
             fR.OpenSession();
         }
 
-        private void добавитьТоварToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new Products().ShowDialog();
-        }
-
         private void beepB_Click(object sender, EventArgs e)
         {
             fR.Beep();
+        }
+
+        private void printChequeB_Click(object sender, EventArgs e)
+        {
+            if (chequeBodyTB.Text == "")
+                fR.PrintCheque("Тело чека");
+            else
+                fR.PrintCheque(chequeBodyTB.Text);
         }
     }
 }

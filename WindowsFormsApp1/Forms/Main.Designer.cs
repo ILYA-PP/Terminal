@@ -42,11 +42,7 @@
             this.propertiesB = new System.Windows.Forms.Button();
             this.openSessionB = new System.Windows.Forms.Button();
             this.closeSessionB = new System.Windows.Forms.Button();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.добавитьТоварToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.beepB = new System.Windows.Forms.Button();
-            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // payB
@@ -93,7 +89,7 @@
             this.printChequeB.TabIndex = 4;
             this.printChequeB.Text = "Печать чека";
             this.printChequeB.UseVisualStyleBackColor = true;
-            this.printChequeB.Click += new System.EventHandler(this.button1_Click);
+            this.printChequeB.Click += new System.EventHandler(this.printChequeB_Click);
             // 
             // label2
             // 
@@ -179,31 +175,6 @@
             this.closeSessionB.UseVisualStyleBackColor = true;
             this.closeSessionB.Click += new System.EventHandler(this.closeSessionB_Click);
             // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.файлToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(815, 24);
-            this.menuStrip1.TabIndex = 15;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // файлToolStripMenuItem
-            // 
-            this.файлToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.добавитьТоварToolStripMenuItem});
-            this.файлToolStripMenuItem.Name = "файлToolStripMenuItem";
-            this.файлToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
-            this.файлToolStripMenuItem.Text = "Файл";
-            // 
-            // добавитьТоварToolStripMenuItem
-            // 
-            this.добавитьТоварToolStripMenuItem.Name = "добавитьТоварToolStripMenuItem";
-            this.добавитьТоварToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.добавитьТоварToolStripMenuItem.Text = "Добавить товар";
-            this.добавитьТоварToolStripMenuItem.Click += new System.EventHandler(this.добавитьТоварToolStripMenuItem_Click);
-            // 
             // beepB
             // 
             this.beepB.Location = new System.Drawing.Point(87, 201);
@@ -234,12 +205,7 @@
             this.Controls.Add(this.sumTB);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.payB);
-            this.Controls.Add(this.menuStrip1);
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -261,9 +227,6 @@
         private System.Windows.Forms.Button propertiesB;
         private System.Windows.Forms.Button openSessionB;
         private System.Windows.Forms.Button closeSessionB;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem добавитьТоварToolStripMenuItem;
         private System.Windows.Forms.Button beepB;
     }
 }

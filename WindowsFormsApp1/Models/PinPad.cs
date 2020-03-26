@@ -1,12 +1,13 @@
 ﻿using SBRFSRV;
 using System;
 using DrvFRLib;
+using System.Windows.Forms;
 
 namespace TerminalApp
 {
     class PinPad
     {
-        //private DrvFR Driver;
+        private DrvFR Driver { get; set; }
         public static Server Server { get; set; }
         private enum Operations
         {
@@ -18,21 +19,16 @@ namespace TerminalApp
         }
         public PinPad()
         {
-            //Driver = new DrvFR();
-            //Driver.Password = 30;
-            try
-            {
-                if (Server == null)
-                    Server = new Server();
-            }
-            catch (Exception ex) { }
+            Driver = new DrvFR();
+            Driver.Password = 30;
+            if (Server == null)
+                Server = new Server();
         }
         public string GetCheque()
         {
             try
             { 
                 string cheque = Server.GParamString("Cheque");
-                Print(cheque);
                 return cheque;
             }
             catch (Exception ex) { return ex.Message; }
@@ -47,22 +43,7 @@ namespace TerminalApp
             catch{ }
             return false;
         }
-
-        public void Print(string cheque)
-        {
-            DrvFR Driver = new DrvFR();
-            Driver.ConnectionType = 6;
-            Driver.ProtocolType = 0;
-            Driver.IPAddress = "192.168.137.111";
-            Driver.UseIPAddress = true;
-
-            Driver.TCPPort = 7778;
-            Driver.Timeout = 1000;
-            Driver.Password = 30;
-            Driver.StringForPrinting = cheque;
-            Driver.PrintString();
-        }
-        public string Purchase(double sum)
+        public void Purchase(double sum)
         {
             try
             {
@@ -70,47 +51,50 @@ namespace TerminalApp
                 Server.SParam("Amount", sum * 100);
                 int result = Server.NFun((int)Operations.Purchase);
                 if (result == 0)
-                    return "Успешно!";
+                    MessageBox.Show("Успешно!");
                 else
-                    return $"Операция НЕ выполнена. Код ошибки: {result}";
+                    MessageBox.Show($"Операция НЕ выполнена. Код ошибки: {result}");
             }            
-            catch(Exception ex) { return ex.Message; }
+            catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
-        public string Cancel()
+        public void Cancel()
         {
             try
             { 
                 Server.Clear();
                 int result = Server.NFun((int)Operations.Cancel);
                 if (result != 0)
-                    return $"Операция НЕ отменена. Код ошибки: {result}";
-                return "Операция отменена";
+                    MessageBox.Show($"Операция НЕ отменена. Код ошибки: {result}");
+                else
+                    MessageBox.Show("Операция отменена");
             }
-            catch(Exception ex) { return ex.Message; }
+            catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
-        public string Return()
+        public void Return()
         {
             try
             {
                 Server.Clear();
                 int result = Server.NFun((int)Operations.Return);
                 if (result != 0)
-                    return $"Средства НЕ возвращены. Код ошибки: {result}";
-                return "Средства возвращены";
+                    MessageBox.Show($"Средства НЕ возвращены. Код ошибки: {result}");
+                else
+                    MessageBox.Show("Средства возвращены");
             }
-            catch (Exception ex) { return ex.Message; }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
-        public string CloseDay()
+        public void CloseDay()
         {
             try
             {
                 Server.Clear();
                 int result = Server.NFun((int)Operations.Total);
                 if (result != 0)
-                    return $"День НЕ закрыт. Код ошибки: {result}";
-                return "День закрыт";
+                    MessageBox.Show($"День НЕ закрыт. Код ошибки: {result}");
+                else
+                    MessageBox.Show("День закрыт");
             }
-            catch(Exception ex) { return ex.Message; }
+            catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
     }
 }
