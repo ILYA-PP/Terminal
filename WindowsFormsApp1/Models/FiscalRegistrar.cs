@@ -17,6 +17,7 @@ namespace TerminalApp
         {
             Connect();
         }
+        //подключение к фискальному регистратору
         private void Connect()
         {
             Driver = new DrvFR();
@@ -30,23 +31,26 @@ namespace TerminalApp
             Driver.Password = 30;
             CheckConnect();
         }
-        private void CheckConnect()
+        //проверка соединения
+        public void CheckConnect()
         {
             if (Driver.Connect() != 0)
                 AddLog();
         }
+        //подать звуковой сигнал
         public void Beep()
         {
             if (Driver.Connect() == 0)
                 Driver.Beep();
             AddLog();
         }
+        //вывод, возвращаемых фискальником сообщений, в поле формы
         private void AddLog()
         {
             if(List != null)
                 List.Items.Add($"{Driver.ResultCode}: {Driver.ResultCodeDescription}");
         }
-
+        //печать чека
         public void PrintCheque(string cheque)
         {
             Driver.StringForPrinting = cheque;
@@ -58,7 +62,7 @@ namespace TerminalApp
             Driver.CutCheck();
             AddLog();
         }
-
+        //печать отчетов
         public void PrintZReport()
         {
             Driver.PrintReportWithCleaning();
@@ -69,11 +73,13 @@ namespace TerminalApp
             Driver.PrintReportWithoutCleaning();
             AddLog();
         }
+        //показать свойства
         public void OpenProperties()
         {
             Driver.ShowProperties();
             AddLog();
         }
+        //открытие/закрытие смены
         public void OpenSession()
         {
             Driver.FNOpenSession();
@@ -84,7 +90,8 @@ namespace TerminalApp
             Driver.FNCloseSession();
             AddLog();
         }
-
+        //получить пользователя из регистра
+        //по номеру строки
         public User GetUser(int row)
         {
             User user = new User();
@@ -103,7 +110,7 @@ namespace TerminalApp
             AddLog();
             return user;
         }
-
+        //количество строк в таблице
         public int GetTableRowCount(int n)
         {
             Driver.TableNumber = n;

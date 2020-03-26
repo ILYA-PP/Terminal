@@ -1,13 +1,11 @@
 ﻿using SBRFSRV;
 using System;
-using DrvFRLib;
 using System.Windows.Forms;
 
 namespace TerminalApp
 {
     class PinPad
     {
-        private DrvFR Driver { get; set; }
         public static Server Server { get; set; }
         private enum Operations
         {
@@ -19,11 +17,10 @@ namespace TerminalApp
         }
         public PinPad()
         {
-            Driver = new DrvFR();
-            Driver.Password = 30;
             if (Server == null)
                 Server = new Server();
         }
+        //получить чек операции
         public string GetCheque()
         {
             try
@@ -33,6 +30,7 @@ namespace TerminalApp
             }
             catch (Exception ex) { return ex.Message; }
         }
+        //проверка, подключен ли пинпад
         public bool IsEnabled()
         {
             try
@@ -40,9 +38,13 @@ namespace TerminalApp
                 if (Server.NFun(13) == 0)
                     return true;
             }
-            catch{ }
+            catch(Exception ex)
+            { 
+                MessageBox.Show(ex.Message); 
+            }
             return false;
         }
+        //операция покупки
         public void Purchase(double sum)
         {
             try
@@ -57,6 +59,7 @@ namespace TerminalApp
             }            
             catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
+        //отмена покупки
         public void Cancel()
         {
             try
@@ -70,6 +73,7 @@ namespace TerminalApp
             }
             catch(Exception ex) { MessageBox.Show(ex.Message); }
         }
+        //возврат средств
         public void Return()
         {
             try
@@ -83,6 +87,7 @@ namespace TerminalApp
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
         }
+        //операция закрытия дня
         public void CloseDay()
         {
             try
