@@ -13,7 +13,7 @@ namespace TerminalApp
             try
             {
                 fR = new FiscalRegistrar(logLB);
-                pinPad = PinPad.GetServer();
+                pinPad = new PinPad();
                 if (!pinPad.IsEnabled())
                 {
                     MessageBox.Show("Пинпад НЕ подключен!");

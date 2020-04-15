@@ -1,6 +1,10 @@
 ﻿using DrvFRLib;
 using System.Windows.Forms;
 using TerminalApp.Models;
+using System.Configuration.Assemblies;
+using System.Configuration;
+using System.IO;
+using System;
 
 namespace TerminalApp
 {
@@ -20,15 +24,18 @@ namespace TerminalApp
         //подключение к фискальному регистратору
         private void Connect()
         {
-            Driver = new DrvFR();
+            var driverData = ConfigurationManager.AppSettings;
+            Driver = new DrvFR()
+            {
+                ConnectionType = int.Parse(driverData["ConnectionType"]),
+                ProtocolType = int.Parse(driverData["ProtocolType"]),
+                IPAddress = driverData["IPAddress"],
+                UseIPAddress = bool.Parse(driverData["UseIPAddress"]),
+                TCPPort = int.Parse(driverData["TCPPort"]),
+                Timeout = int.Parse(driverData["Timeout"]),
+                Password = int.Parse(driverData["Password"])
+            };
             AddLog();
-            Driver.ConnectionType = 6;
-            Driver.ProtocolType = 0;
-            Driver.IPAddress = "192.168.137.111";
-            Driver.UseIPAddress = true;
-            Driver.TCPPort = 7778;
-            Driver.Timeout = 1000;
-            Driver.Password = 30;
             CheckConnect();
         }
         //проверка соединения
@@ -65,6 +72,18 @@ namespace TerminalApp
         //печать отчетов
         public void PrintZReport()
         {
+            //operatornumber
+            if(Driver.PrintZReportInBuffer() == 0)
+            {
+                Driver.PrintZReportFromBuffer();
+                AddLog();
+                if (Driver.ReadReportBufferLine() == 0)
+                    File.WriteAllText(Application.StartupPath + $"\\Z-отчёты\\Z-отчёт {DateTime.Now.ToShortDateString()}.txt", Driver.StringForPrinting);
+                else
+                    AddLog();
+            }
+            else
+                AddLog();
             Driver.PrintReportWithCleaning();
             AddLog();
         }
