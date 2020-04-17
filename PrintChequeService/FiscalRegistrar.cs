@@ -1,22 +1,15 @@
 ﻿using DrvFRLib;
-using System.Windows.Forms;
-using TerminalApp.Models;
 using System.Configuration.Assemblies;
 using System.Configuration;
 using System.IO;
 using System;
 
-namespace TerminalApp
+namespace PrintChequeService
 {
     class FiscalRegistrar
     {
         private DrvFR Driver { get; set; }
-        private ListBox List { get; set; }
-        public FiscalRegistrar(ListBox l)
-        {
-            List = l;
-            Connect();
-        }
+
         public FiscalRegistrar()
         {
             Connect();
@@ -54,8 +47,7 @@ namespace TerminalApp
         //вывод, возвращаемых фискальником сообщений, в поле формы
         private void AddLog()
         {
-            if(List != null)
-                List.Items.Add($"{Driver.ResultCode}: {Driver.ResultCodeDescription}");
+            //сделать логгирование
         }
         //печать чека
         public void PrintCheque(Cheque cheque)
@@ -130,7 +122,7 @@ namespace TerminalApp
                 Driver.PrintZReportFromBuffer();
                 AddLog();
                 if (Driver.ReadReportBufferLine() == 0)
-                    File.WriteAllText(Application.StartupPath + $"\\Z-отчёты\\Z-отчёт {DateTime.Now.ToShortDateString()}.txt", Driver.StringForPrinting);
+                    File.WriteAllText(Environment.CurrentDirectory + $"\\Z-отчёты\\Z-отчёт {DateTime.Now.ToShortDateString()}.txt", Driver.StringForPrinting);
                 else
                     AddLog();
             }
@@ -163,24 +155,6 @@ namespace TerminalApp
         }
         //получить пользователя из регистра
         //по номеру строки
-        public User GetUser(int row)
-        {
-            User user = new User();
-            Driver.TableNumber = 2;
-            Driver.GetFieldStruct();
-            AddLog();
-            Driver.RowNumber = row;
-            Driver.FieldNumber = 1;
-            Driver.ReadTable();
-            user.Login = Driver.ValueOfFieldString;
-            AddLog();
-            Driver.RowNumber = row;
-            Driver.FieldNumber = 2;
-            Driver.ReadTable();
-            user.Password = Driver.ValueOfFieldString;
-            AddLog();
-            return user;
-        }
         //количество строк в таблице
         public int GetTableRowCount(int n)
         {

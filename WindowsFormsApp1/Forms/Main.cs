@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using TerminalApp.Models;
+using System.Text;
 
 namespace TerminalApp
 {
@@ -10,6 +12,9 @@ namespace TerminalApp
         public Main()
         {
             InitializeComponent();
+            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
+            foreach (var c in ChequeFromWebService.GetCheque())
+                MessageBox.Show($"{c.ID}{c.Email}{c.Phone}{c.Summa}{c.Payment}  {c.Products[0].Name}");
             try
             {
                 fR = new FiscalRegistrar(logLB);
@@ -80,10 +85,10 @@ namespace TerminalApp
 
         private void printChequeB_Click(object sender, EventArgs e)
         {
-            if (chequeBodyTB.Text == "")
-                fR.PrintCheque("Тело чека");
-            else
-                fR.PrintCheque(chequeBodyTB.Text);
+            //if (chequeBodyTB.Text == "")
+            //    fR.PrintCheque("Тело чека");
+            //else
+            //    fR.PrintCheque(chequeBodyTB.Text);
         }
     }
 }

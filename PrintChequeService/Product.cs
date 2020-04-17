@@ -1,4 +1,4 @@
-﻿namespace TerminalApp
+﻿namespace PrintChequeService
 {
     class Product
     {
