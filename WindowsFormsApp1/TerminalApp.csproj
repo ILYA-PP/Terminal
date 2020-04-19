@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>TerminalApp</RootNamespace>
     <AssemblyName>TerminalApp</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -75,8 +75,6 @@
       <DependentUpon>Authorization.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Authorize.cs" />
-    <Compile Include="Models\Cheque.cs" />
-    <Compile Include="Models\ChequeFromWebService.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\FiscalRegistrar.cs" />
     <Compile Include="Forms\Main.cs">
@@ -86,7 +84,6 @@
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\PinPad.cs" />
-    <Compile Include="Models\Product.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\Authorization.resx">
