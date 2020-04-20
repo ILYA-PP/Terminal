@@ -13,8 +13,6 @@ namespace TerminalApp
         {
             InitializeComponent();
             System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-            foreach (var c in ChequeFromWebService.GetCheque())
-                MessageBox.Show($"{c.ID}{c.Email}{c.Phone}{c.Summa}{c.Payment}  {c.Products[0].Name}");
             try
             {
                 fR = new FiscalRegistrar(logLB);
