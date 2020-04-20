@@ -13,11 +13,13 @@ namespace PrintChequeService
         public double Summa { get; set; }
         public int Payment { get; set; }
         public List<Product> Products { get; set; }
-
-        public Cheque(string phone, string email)
+        public Cheque(int id, string p, string e, double s, int pay)
         {
-            Phone = phone;
-            Email = email;
+            ID = id;
+            Phone = p;
+            Email = e;
+            Summa = s;
+            Payment = pay;
             Products = new List<Product>();
         }
     }

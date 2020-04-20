@@ -6,7 +6,6 @@ namespace PrintChequeService
 {
     class Program
     {
-        private static int i = 0;
         private static FiscalRegistrar fR;
         static void Main(string[] args)
         {
@@ -32,7 +31,7 @@ namespace PrintChequeService
             try
             {
                 foreach (var c in ChequeFromWebService.GetCheque())
-                    Console.WriteLine(c.Phone + $"№ {i++}");
+                    Console.WriteLine(c.Phone);
                     //fR.PrintCheque(c);
             }
             catch (Exception e) { Console.WriteLine(e.Message); }

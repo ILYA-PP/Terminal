@@ -8,6 +8,7 @@ namespace PrintChequeService
 {
     class ChequeFromWebService
     {
+        private static List<int> PrintedCheques = new List<int>();
         private static string GetXml()
         {
             string data = "";
@@ -42,20 +43,55 @@ namespace PrintChequeService
                     var elem = XElement.Parse(xml);
                     foreach (var b in elem.Elements())
                     {
-                        cheque = new Cheque(b.Attribute("tel").Value, elem.Element("bill").Attribute("email").Value);
-                        cheques.Add(cheque);
+                        int id = 0, payment = 0;
+                        string phone = "", email = "";
+                        double summa = 0;
+                        if (b.Attribute("id") != null)
+                            id = int.Parse(b.Attribute("id").Value);
+                        if (b.Attribute("tel") != null)
+                            phone = b.Attribute("tel").Value;
+                        if (b.Attribute("email") != null)
+                            email = b.Attribute("email").Value;
+                        if (b.Attribute("summa") != null)
+                            summa = double.Parse(b.Attribute("summa").Value);
+                        if (b.Attribute("payment") != null)
+                            payment = int.Parse(b.Attribute("payment").Value);
+
+                        cheque = new Cheque(id, phone, email, summa, payment);
                         foreach (var p in b.Elements())
                         {
+                            string name = "";
+                            double price = 0, nds = 0, ndsS = 0, rowS = 0;
+                            int qnt = 0, rowT = 0;
+                            if (p.Attribute("name") != null)
+                                name = p.Attribute("name").Value;
+                            if (p.Attribute("price") != null)
+                                price = double.Parse(p.Attribute("price").Value);
+                            if (p.Attribute("qnt") != null)
+                                qnt = int.Parse(p.Attribute("qnt").Value);
+                            if (p.Attribute("nds") != null)
+                                nds = double.Parse(p.Attribute("nds").Value);
+                            if (p.Attribute("nds_summ") != null)
+                                ndsS = double.Parse(p.Attribute("nds_summ").Value);
+                            if (p.Attribute("row_type") != null)
+                                rowT = int.Parse(p.Attribute("row_type").Value);
+                            if (p.Attribute("row_summ") != null)
+                                rowS = double.Parse(p.Attribute("row_summ").Value);
                             cheque.Products.Add(new Product()
                             {
-                                Name = p.Attribute("name").Value,
-                                Price = double.Parse(p.Attribute("price").Value),
-                                Quantity = int.Parse(p.Attribute("qnt").Value),
-                                NDS = double.Parse(p.Attribute("nds").Value),
-                                NDS_Summ = double.Parse(p.Attribute("nds_summ").Value),
-                                Row_Type = int.Parse(p.Attribute("row_type").Value),
-                                Row_Summ = double.Parse(p.Attribute("row_summ").Value)
+                                Name = name,
+                                Price = price,
+                                Quantity = qnt,
+                                NDS = nds,
+                                NDS_Summ = ndsS,
+                                Row_Type = rowT,
+                                Row_Summ = rowS
                             });
+                        }
+                        if (!PrintedCheques.Contains(cheque.ID))
+                        {
+                            PrintedCheques.Add(cheque.ID);
+                            cheques.Add(cheque);
                         }
                     }
                 }
