@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace PrintChequeService
@@ -17,14 +14,14 @@ namespace PrintChequeService
             try
             {
                 fR = new FiscalRegistrar();
+                int interval = int.Parse(driverData["Interval"]);
+                TimerCallback tm = new TimerCallback(Method);
+                Timer timer = new Timer(tm, null, 0, interval);
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error: {e.Message}");
             }
-            int interval = int.Parse(driverData["Interval"]);
-            TimerCallback tm = new TimerCallback(Method);
-            Timer timer = new Timer(tm, null, 0, interval);
             Console.ReadKey();
         }
 

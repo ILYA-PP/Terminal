@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Xml.Linq;
 
-namespace PrintChequeService
+namespace TerminalApp.Models
 {
     class ChequeFromWebService
     {

@@ -75,6 +75,9 @@
       <DependentUpon>Authorization.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Authorize.cs" />
+    <Compile Include="Models\Cheque.cs" />
+    <Compile Include="Models\ChequeFromWebService.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\FiscalRegistrar.cs" />
     <Compile Include="Forms\Main.cs">

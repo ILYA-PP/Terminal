@@ -52,7 +52,9 @@ namespace PrintChequeService
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
+            //добавить печать qr кода, рекламы и прочего
             double result = 0;
+            Driver.PrintDocumentTitle();
             Driver.CheckType = 1;
             foreach(Product p in cheque.Products)
             {
@@ -110,6 +112,7 @@ namespace PrintChequeService
             Driver.TaxValue6 = 0;
             if (Driver.FNCloseCheckEx() != 0)
                 AddLog();
+            Driver.FNPrintDocument();
             Driver.CutCheck();
             AddLog();
         }
