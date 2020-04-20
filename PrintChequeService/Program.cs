@@ -31,8 +31,7 @@ namespace PrintChequeService
             try
             {
                 foreach (var c in ChequeFromWebService.GetCheque())
-                    Console.WriteLine(c.Phone);
-                    //fR.PrintCheque(c);
+                    fR.PrintCheque(c);
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
             Thread.CurrentThread.Join();
