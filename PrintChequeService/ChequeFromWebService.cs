@@ -16,13 +16,14 @@ namespace PrintChequeService
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://sert.godovalov.ru/webreport/execsp?spName=megamakler.dbo.api_bill_print&spOut=result");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                using (Stream stream = response.GetResponseStream())
-                {
-                    using (StreamReader sr = new StreamReader(stream))
+                if(response.StatusCode == HttpStatusCode.OK)
+                    using (Stream stream = response.GetResponseStream())
                     {
-                        data = sr.ReadToEnd();
+                        using (StreamReader sr = new StreamReader(stream))
+                        {
+                            data = sr.ReadToEnd();
+                        }
                     }
-                }
             }
             catch (Exception e)
             { 
