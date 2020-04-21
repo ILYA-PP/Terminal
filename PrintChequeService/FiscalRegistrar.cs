@@ -18,42 +18,43 @@ namespace PrintChequeService
         private void Connect()
         {
             var driverData = ConfigurationManager.AppSettings;
-            Driver = new DrvFR()
+            try
             {
-                ConnectionType = int.Parse(driverData["ConnectionType"]),
-                ProtocolType = int.Parse(driverData["ProtocolType"]),
-                IPAddress = driverData["IPAddress"],
-                UseIPAddress = bool.Parse(driverData["UseIPAddress"]),
-                TCPPort = int.Parse(driverData["TCPPort"]),
-                Timeout = int.Parse(driverData["Timeout"]),
-                Password = int.Parse(driverData["Password"])
-            };
-            AddLog();
+                Driver = new DrvFR()
+                {
+                    ConnectionType = int.Parse(driverData["ConnectionType"]),
+                    ProtocolType = int.Parse(driverData["ProtocolType"]),
+                    IPAddress = driverData["IPAddress"],
+                    UseIPAddress = bool.Parse(driverData["UseIPAddress"]),
+                    TCPPort = int.Parse(driverData["TCPPort"]),
+                    Timeout = int.Parse(driverData["Timeout"]),
+                    Password = int.Parse(driverData["Password"])
+                };
+            }
+            catch (Exception ex)
+            {
+                AddLog(ex.Message);
+            }
             CheckConnect();
         }
         //проверка соединения
         public void CheckConnect()
         {
-            if (Driver.Connect() != 0)
-                AddLog();
-        }
-        //подать звуковой сигнал
-        public void Beep()
-        {
-            if (Driver.Connect() == 0)
-                Driver.Beep();
-            AddLog();
+            AddLog("Подключение:");
+            executeAndHandleError(Driver.Connect);
         }
         //вывод, возвращаемых фискальником сообщений, в поле формы
-        private void AddLog()
+        private void AddLog(string mes)
         {
-            //сделать логгирование
+            Console.WriteLine(mes);
         }
 
-        private void CheckResult(int code)
+        private void CheckResult(int code, string n)
         {
             if (code != 0)
-                Console.WriteLine($"Ошибка, код: {code}");
+                Console.WriteLine($"Метод: {n}\nОшибка: {Driver.ResultCodeDescription}\nКод: {code}\n");
+            else
+                Console.WriteLine($"Метод {n}: Успешно\n");
         }
 
         private delegate int Func();
@@ -67,7 +68,7 @@ namespace PrintChequeService
                     case 0x50: 
                         continue;
                     default: 
-                        CheckResult(ret);
+                        CheckResult(ret, f.Method.Name);
                         return;
                 }
             }
@@ -77,7 +78,9 @@ namespace PrintChequeService
         {
             //добавить печать qr кода, рекламы и прочего
             double result = 0;
+            AddLog("Печать заголовка: ");
             executeAndHandleError(Driver.PrintDocumentTitle);
+            AddLog("Открытие чека: ");
             executeAndHandleError(Driver.OpenCheck);
             Driver.CheckType = 1;
             foreach(Product p in cheque.Products)
@@ -103,6 +106,7 @@ namespace PrintChequeService
                     Driver.Tax2 = 2;
                     Driver.Tax1 = 0;
                 }
+                AddLog("Фиксация операции: ");
                 executeAndHandleError(Driver.FNOperation);
             }
             if (cheque.Payment == 1)
@@ -133,58 +137,20 @@ namespace PrintChequeService
             Driver.TaxValue4 = 0;
             Driver.TaxValue5 = 0;
             Driver.TaxValue6 = 0;
-            Driver.CloseCheck();
+            AddLog("Закрытие чека: ");
             executeAndHandleError(Driver.FNCloseCheckEx);
+            //Driver.BarcodeType = 3;
+            //Driver.BarcodeType = 3;
+            //Driver.BlockDataHex = barcodeHex;
+            //Driver.BarcodeParameter1 = 0;
+            //Driver.BarcodeParameter2 = 0;
+            //Driver.BarcodeParameter3 = 5;
+            //Driver.BarcodeParameter4 = 0;
+            //Driver.BarcodeParameter5 = 0;
+            //Driver.BarcodeAlignment = TBarcodeAlignment.baCenter;
+            //Driver.LoadAndPrint2DBarcode();
+            AddLog("Отрезка чека: ");
             executeAndHandleError(Driver.CutCheck);
-        }
-        //печать отчетов
-        public void PrintZReport()
-        {
-            //operatornumber
-            if(Driver.PrintZReportInBuffer() == 0)
-            {
-                Driver.PrintZReportFromBuffer();
-                AddLog();
-                if (Driver.ReadReportBufferLine() == 0)
-                    File.WriteAllText(Environment.CurrentDirectory + $"\\Z-отчёты\\Z-отчёт {DateTime.Now.ToShortDateString()}.txt", Driver.StringForPrinting);
-                else
-                    AddLog();
-            }
-            else
-                AddLog();
-            Driver.PrintReportWithCleaning();
-            AddLog();
-        }
-        public void PrintXReport()
-        {
-            Driver.PrintReportWithoutCleaning();
-            AddLog();
-        }
-        //показать свойства
-        public void OpenProperties()
-        {
-            Driver.ShowProperties();
-            AddLog();
-        }
-        //открытие/закрытие смены
-        public void OpenSession()
-        {
-            Driver.FNOpenSession();
-            AddLog();
-        }
-        public void CloseSession()
-        {
-            Driver.FNCloseSession();
-            AddLog();
-        }
-        //получить пользователя из регистра
-        //по номеру строки
-        //количество строк в таблице
-        public int GetTableRowCount(int n)
-        {
-            Driver.TableNumber = n;
-            Driver.GetTableStruct();
-            return Driver.RowNumber;
         }
     }
 }
