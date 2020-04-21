@@ -27,11 +27,13 @@ namespace PrintChequeService
         private static void Method(object obj)
         {
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
-            Console.WriteLine("Печать чека");
             try
             {
                 foreach (var c in ChequeFromWebService.GetCheque())
+                {
+                    Console.WriteLine("Печать чека");
                     fR.PrintCheque(c);
+                }
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
             Thread.CurrentThread.Join();

@@ -49,16 +49,40 @@ namespace PrintChequeService
         {
             //сделать логгирование
         }
+
+        private void CheckResult(int code)
+        {
+            if (code != 0)
+                Console.WriteLine($"Ошибка, код: {code}");
+        }
+
+        private delegate int Func();
+        private void executeAndHandleError(Func f)
+        {
+            while (true)
+            {
+                var ret = f();
+                switch (ret)
+                {
+                    case 0x50: 
+                        continue;
+                    default: 
+                        CheckResult(ret);
+                        return;
+                }
+            }
+        }
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
             //добавить печать qr кода, рекламы и прочего
             double result = 0;
-            Driver.PrintDocumentTitle();
+            executeAndHandleError(Driver.PrintDocumentTitle);
+            executeAndHandleError(Driver.OpenCheck);
             Driver.CheckType = 1;
             foreach(Product p in cheque.Products)
             {
-                //add product!!!!
+                //add product
                 Driver.StringForPrinting = p.Name;
                 Driver.Price = (decimal)p.Price;
                 Driver.Quantity = p.Quantity;
@@ -79,8 +103,7 @@ namespace PrintChequeService
                     Driver.Tax2 = 2;
                     Driver.Tax1 = 0;
                 }
-                if (Driver.FNOperation() != 0)
-                    AddLog();
+                executeAndHandleError(Driver.FNOperation);
             }
             if (cheque.Payment == 1)
             {
@@ -110,11 +133,9 @@ namespace PrintChequeService
             Driver.TaxValue4 = 0;
             Driver.TaxValue5 = 0;
             Driver.TaxValue6 = 0;
-            if (Driver.FNCloseCheckEx() != 0)
-                AddLog();
-            Driver.FNPrintDocument();
-            Driver.CutCheck();
-            AddLog();
+            Driver.CloseCheck();
+            executeAndHandleError(Driver.FNCloseCheckEx);
+            executeAndHandleError(Driver.CutCheck);
         }
         //печать отчетов
         public void PrintZReport()
