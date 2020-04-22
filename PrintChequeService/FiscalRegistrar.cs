@@ -140,12 +140,29 @@ namespace PrintChequeService
                 Driver.TaxValue6 = 0;
                 AddLog("Закрытие чека: ");
                 executeAndHandleError(Driver.FNCloseCheckEx);
-
+                GetQRCode();
                 AddLog("Отрезка чека: ");
                 executeAndHandleError(Driver.CutCheck);
             }
             else
                 AddLog("Нет подключения");
+        }
+
+        private void GetQRCode()
+        {
+            Driver.BarcodeType = 3;
+            Driver.BarCode = $"t={DateTime.Now}&s={Driver.Summ1}&" +
+                $"fn={Driver.SerialNumber}&i={Driver.DocumentNumber}&fp={Driver.FiscalSignAsString}&n={Driver.CheckType}";
+            AddLog($"Строка для QR-кода: {Driver.BarCode}");
+            Driver.BarcodeStartBlockNumber = 1;
+            Driver.BarcodeParameter1 = 0;
+            Driver.BarcodeParameter2 = 0;
+            Driver.BarcodeParameter3 = 5;
+            Driver.BarcodeParameter4 = 0;
+            Driver.BarcodeParameter5 = 0;
+            Driver.BarcodeAlignment = TBarcodeAlignment.baCenter;
+            AddLog("Загрузка и печать QR-кода: ");
+            executeAndHandleError(Driver.LoadAndPrint2DBarcode);
         }
     }
 }
