@@ -76,71 +76,76 @@ namespace PrintChequeService
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
-            //добавить печать qr кода, рекламы и прочего
-            double result = 0;
-            AddLog("Печать заголовка: ");
-            executeAndHandleError(Driver.PrintDocumentTitle);
-            AddLog("Открытие чека: ");
-            executeAndHandleError(Driver.OpenCheck);
-            Driver.CheckType = 1;
-            foreach(Product p in cheque.Products)
+            if (Driver.Connect() == 0)
             {
-                //add product
-                Driver.StringForPrinting = p.Name;
-                Driver.Price = (decimal)p.Price;
-                Driver.Quantity = p.Quantity;
-                Driver.Summ1Enabled = true;
-                Driver.Summ1 = (decimal)p.Row_Summ;
-                result += p.Row_Summ;
-                Driver.TaxValue1Enabled = false;
-                Driver.PaymentTypeSign = 4;
-                Driver.PaymentItemSign = p.Row_Type;
-                Driver.TaxValue = (decimal)p.NDS_Summ;
-                if (p.NDS == 18)
+                double result = 0;
+                AddLog("Печать заголовка: ");
+                executeAndHandleError(Driver.PrintDocumentTitle);
+                AddLog("Открытие чека: ");
+                executeAndHandleError(Driver.OpenCheck);
+                Driver.CheckType = 1;
+                foreach (Product p in cheque.Products)
                 {
-                    Driver.Tax1 = 1;
-                    Driver.Tax2 = 0;
+                    //add product
+                    Driver.StringForPrinting = p.Name;
+                    Driver.Price = (decimal)p.Price;
+                    Driver.Quantity = p.Quantity;
+                    Driver.Summ1Enabled = true;
+                    Driver.Summ1 = (decimal)p.Row_Summ;
+                    result += p.Row_Summ;
+                    Driver.TaxValue1Enabled = false;
+                    Driver.PaymentTypeSign = 4;
+                    Driver.PaymentItemSign = p.Row_Type;
+                    Driver.TaxValue = (decimal)p.NDS_Summ;
+                    if (p.NDS == 18)
+                    {
+                        Driver.Tax1 = 1;
+                        Driver.Tax2 = 0;
+                    }
+                    else if (p.NDS == 10)
+                    {
+                        Driver.Tax2 = 2;
+                        Driver.Tax1 = 0;
+                    }
+                    AddLog("Фиксация операции: ");
+                    executeAndHandleError(Driver.FNOperation);
                 }
-                else if (p.NDS == 10)
+                if (cheque.Payment == 1)
                 {
-                    Driver.Tax2 = 2;
-                    Driver.Tax1 = 0;
+                    Driver.Summ1 = (decimal)result;
+                    Driver.Summ2 = 0;
                 }
-                AddLog("Фиксация операции: ");
-                executeAndHandleError(Driver.FNOperation);
+                else if (cheque.Payment == 2)
+                {
+                    Driver.Summ2 = (decimal)result;
+                    Driver.Summ1 = 0;
+                }
+                Driver.Summ3 = 0;
+                Driver.Summ4 = 0;
+                Driver.Summ5 = 0;
+                Driver.Summ6 = 0;
+                Driver.Summ7 = 0;
+                Driver.Summ8 = 0;
+                Driver.Summ9 = 0;
+                Driver.Summ10 = 0;
+                Driver.Summ11 = 0;
+                Driver.Summ12 = 0;
+                Driver.Summ13 = 0;
+                Driver.Summ14 = 0;
+                Driver.Summ15 = 0;
+                Driver.Summ16 = 0;
+                Driver.TaxValue3 = 0;
+                Driver.TaxValue4 = 0;
+                Driver.TaxValue5 = 0;
+                Driver.TaxValue6 = 0;
+                AddLog("Закрытие чека: ");
+                executeAndHandleError(Driver.FNCloseCheckEx);
+
+                AddLog("Отрезка чека: ");
+                executeAndHandleError(Driver.CutCheck);
             }
-            if (cheque.Payment == 1)
-            {
-                Driver.Summ1 = (decimal)result;
-                Driver.Summ2 = 0;
-            }
-            else if (cheque.Payment == 2)
-            {
-                Driver.Summ2 = (decimal)result;
-                Driver.Summ1 = 0;
-            }
-            Driver.Summ3 = 0;
-            Driver.Summ4 = 0;
-            Driver.Summ5 = 0;
-            Driver.Summ6 = 0;
-            Driver.Summ7 = 0;
-            Driver.Summ8 = 0;
-            Driver.Summ9 = 0;
-            Driver.Summ10 = 0;
-            Driver.Summ11 = 0;
-            Driver.Summ12 = 0;
-            Driver.Summ13 = 0;
-            Driver.Summ14 = 0;
-            Driver.Summ15 = 0;
-            Driver.Summ16 = 0;
-            Driver.TaxValue3 = 0;
-            Driver.TaxValue4 = 0;
-            Driver.TaxValue5 = 0;
-            Driver.TaxValue6 = 0;
-            AddLog("Закрытие чека: ");
-            executeAndHandleError(Driver.FNCloseCheckEx);
-            AddLog("Отрезка чека: ");
-            executeAndHandleError(Driver.CutCheck);
+            else
+                AddLog("Нет подключения");
         }
     }
 }
