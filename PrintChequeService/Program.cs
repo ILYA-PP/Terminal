@@ -29,11 +29,15 @@ namespace PrintChequeService
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             try
             {
-                foreach (var c in ChequeFromWebService.GetCheque())
-                {
-                    Console.WriteLine("Печать чека");
-                    fR.PrintCheque(c);
-                }
+                var cheque = ChequeFromWebService.GetCheque();
+                if(cheque.Count > 0)
+                    foreach (var c in cheque)
+                    {
+                        Console.WriteLine("Печать чека");
+                        fR.PrintCheque(c);
+                    }
+                else
+                    Console.WriteLine("Ожидание чека...");
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
             Thread.CurrentThread.Join();

@@ -139,16 +139,6 @@ namespace PrintChequeService
             Driver.TaxValue6 = 0;
             AddLog("Закрытие чека: ");
             executeAndHandleError(Driver.FNCloseCheckEx);
-            //Driver.BarcodeType = 3;
-            //Driver.BarcodeType = 3;
-            //Driver.BlockDataHex = barcodeHex;
-            //Driver.BarcodeParameter1 = 0;
-            //Driver.BarcodeParameter2 = 0;
-            //Driver.BarcodeParameter3 = 5;
-            //Driver.BarcodeParameter4 = 0;
-            //Driver.BarcodeParameter5 = 0;
-            //Driver.BarcodeAlignment = TBarcodeAlignment.baCenter;
-            //Driver.LoadAndPrint2DBarcode();
             AddLog("Отрезка чека: ");
             executeAndHandleError(Driver.CutCheck);
         }
