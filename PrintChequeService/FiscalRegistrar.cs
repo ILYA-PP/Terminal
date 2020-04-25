@@ -35,12 +35,7 @@ namespace PrintChequeService
             {
                 AddLog(ex.Message);
             }
-            CheckConnect();
-        }
-        //проверка соединения
-        public void CheckConnect()
-        {
-            AddLog("Подключение:");
+            AddLog($"Подключение к фискальному регистратору (IP = {Driver.IPAddress}): ");
             executeAndHandleError(Driver.Connect);
         }
         //вывод, возвращаемых фискальником сообщений, в поле формы
@@ -52,9 +47,10 @@ namespace PrintChequeService
         private void CheckResult(int code, string n)
         {
             if (code != 0)
-                Console.WriteLine($"Метод: {n}\nОшибка: {Driver.ResultCodeDescription}\nКод: {code}\n");
+                Console.WriteLine($"Метод: {n} Ошибка: {Driver.ResultCodeDescription} Код: {code}");
             else
-                Console.WriteLine($"Метод {n}: Успешно\n");
+                Console.WriteLine($"Метод {n}: Успешно");
+            Console.WriteLine($"Статус: {Driver.ECRModeDescription}");
         }
 
         private delegate int Func();
@@ -87,6 +83,7 @@ namespace PrintChequeService
                 foreach (Product p in cheque.Products)
                 {
                     //add product
+                    Driver.CheckType = 1;
                     Driver.StringForPrinting = p.Name;
                     Driver.Price = (decimal)p.Price;
                     Driver.Quantity = p.Quantity;
@@ -138,9 +135,9 @@ namespace PrintChequeService
                 Driver.TaxValue4 = 0;
                 Driver.TaxValue5 = 0;
                 Driver.TaxValue6 = 0;
+                Driver.TaxType = 1;
                 AddLog("Закрытие чека: ");
                 executeAndHandleError(Driver.FNCloseCheckEx);
-                GetQRCode();
                 AddLog("Отрезка чека: ");
                 executeAndHandleError(Driver.CutCheck);
             }
@@ -152,9 +149,10 @@ namespace PrintChequeService
         {
             Driver.BarcodeType = 3;
             Driver.BarCode = $"t={DateTime.Now}&s={Driver.Summ1}&" +
-                $"fn={Driver.SerialNumber}&i={Driver.DocumentNumber}&fp={Driver.FiscalSignAsString}&n={Driver.CheckType}";
+                $"fn={Driver.SerialNumber}&i={Driver.DocumentNumber}&fp={Driver.FiscalSignAsString}&n={Driver.TaxType}";
+            Driver.BarCode = $@"http://check.egais.ru?id=000dede3-2553-4666a70a9e501bbe64df&dt=0612151654&cn=020000111111111";
             AddLog($"Строка для QR-кода: {Driver.BarCode}");
-            Driver.BarcodeStartBlockNumber = 1;
+            Driver.BarcodeStartBlockNumber = 0;
             Driver.BarcodeParameter1 = 0;
             Driver.BarcodeParameter2 = 0;
             Driver.BarcodeParameter3 = 5;

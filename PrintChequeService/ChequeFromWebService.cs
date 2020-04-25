@@ -14,6 +14,7 @@ namespace PrintChequeService
             string data = "";
             try
             {
+                Console.WriteLine("Отправка запроса на сервер: http://sert.godovalov.ru/webreport/execsp?spName=megamakler.dbo.api_bill_print&spOut=result");
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://sert.godovalov.ru/webreport/execsp?spName=megamakler.dbo.api_bill_print&spOut=result");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 if(response.StatusCode == HttpStatusCode.OK)
@@ -22,6 +23,7 @@ namespace PrintChequeService
                         using (StreamReader sr = new StreamReader(stream))
                         {
                             data = sr.ReadToEnd();
+                            Console.WriteLine("Ответ получен");
                         }
                     }
             }
@@ -98,6 +100,7 @@ namespace PrintChequeService
                 }
                 catch(Exception e) { Console.WriteLine(e.Message); }
             }
+            Console.WriteLine($"Чеков получено: {cheques.Count}");
             return cheques;
         }
     }
