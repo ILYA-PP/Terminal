@@ -12,7 +12,6 @@ namespace PrintChequeService
             var driverData = ConfigurationManager.AppSettings;
             try
             {
-                fR = new FiscalRegistrar();
                 int interval = int.Parse(driverData["Interval"]);
                 TimerCallback tm = new TimerCallback(Method);
                 Timer timer = new Timer(tm, null, 0, interval);
@@ -31,11 +30,25 @@ namespace PrintChequeService
             {
                 var cheque = ChequeFromWebService.GetCheque();
                 if(cheque.Count > 0)
+                {
+                    fR = new FiscalRegistrar();
+                    while(fR.CheckConnect() != 0)
+                    {
+                        Console.WriteLine("Ожидание подключения...");
+                        fR.Connect();
+                        Thread.Sleep(1000);
+                    }
                     foreach (var c in cheque)
                     {
-                        Console.WriteLine("Печать чека");
-                        fR.PrintCheque(c);
+                        while (!fR.ChequeIsPrinted)
+                        {
+                            Console.WriteLine("Печать чека");
+                            fR.PrintCheque(c);
+                            Thread.Sleep(1000);
+                        }
+                        fR.ChequeIsPrinted = false;
                     }
+                }
                 else
                     Console.WriteLine("Ожидание чека...");
             }
