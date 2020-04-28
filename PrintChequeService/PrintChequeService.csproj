@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bills.cs" />
     <Compile Include="Cheque.cs" />
     <Compile Include="ChequeFromWebService.cs" />
     <Compile Include="FiscalRegistrar.cs" />

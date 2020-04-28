@@ -28,7 +28,7 @@ namespace PrintChequeService
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             try
             {
-                var cheque = ChequeFromWebService.GetCheque();
+                var cheque = ChequeFromWebService.GetXml();
                 if(cheque.Count > 0)
                 {
                     fR = new FiscalRegistrar();
