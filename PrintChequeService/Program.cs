@@ -29,6 +29,7 @@ namespace PrintChequeService
             try
             {
                 var cheque = ChequeFromWebService.GetXml();
+                Console.WriteLine(cheque[0].Phone);
                 if(cheque.Count > 0)
                 {
                     fR = new FiscalRegistrar();
