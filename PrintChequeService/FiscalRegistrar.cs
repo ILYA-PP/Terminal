@@ -1,7 +1,5 @@
 ﻿using DrvFRLib;
-using System.Configuration.Assemblies;
 using System.Configuration;
-using System.IO;
 using System;
 
 namespace PrintChequeService
@@ -63,8 +61,7 @@ namespace PrintChequeService
                 AddLog($"Подключение к фискальному регистратору (IP = {Driver.IPAddress}): ");
                 executeAndHandleError(Driver.Connect);
                 ChequeIsPrinted = false;
-                //if(CheckConnect() == 0)
-                //    executeAndHandleError(Driver.FNCloseSession);
+                Driver.WaitForPrintingDelay = 20;
             }
             catch (Exception ex)
             {
@@ -74,15 +71,15 @@ namespace PrintChequeService
         //вывод, возвращаемых фискальником сообщений, в поле формы
         private void AddLog(string mes)
         {
-            Console.WriteLine(mes);
+            Console.Write(mes + " ");
         }
 
         private void CheckResult(int code, string n)
         {
             if (code != 0)
-                Console.WriteLine($"Метод: {n} Ошибка: {Driver.ResultCodeDescription} Код: {code}");
+                Console.Write($"Метод: {n} Ошибка: {Driver.ResultCodeDescription} Код: {code} ");
             else
-                Console.WriteLine($"Метод {n}: Успешно");
+                Console.Write($"Метод {n}: Успешно ");
             Console.WriteLine($"Статус: {Driver.ECRModeDescription}");
         }
 
@@ -108,15 +105,21 @@ namespace PrintChequeService
             if (Driver.Connect() == 0)
             {
                 prepareCheque();
-                int state = Driver.GetECRStatus();
+                Driver.GetECRStatus();
+                int state = Driver.ECRMode;
                 if (state == 2 || state == 4 || state == 7 || state == 9)
                 {
                     double result = 0;
-                    AddLog("Печать заголовка: ");
-                    executeAndHandleError(Driver.PrintDocumentTitle);
-                    Driver.CheckType = 1;
+                    Driver.CheckType = 0;
                     AddLog("Открытие чека: ");
                     executeAndHandleError(Driver.OpenCheck);
+                    Driver.Password = 30;
+                    if (cheque.Phone != null)
+                        Driver.CustomerEmail = cheque.Phone;
+                    else if (cheque.Email != null)
+                        Driver.CustomerEmail = cheque.Email;
+                    AddLog("Передача данных покупателя: ");
+                    executeAndHandleError(Driver.FNSendCustomerEmail);
                     foreach (Product p in cheque.Products)
                     {
                         //add product
@@ -124,16 +127,17 @@ namespace PrintChequeService
                         Driver.StringForPrinting = p.Name;
                         Driver.Price = (decimal)p.Price;
                         Driver.Quantity = p.Quantity;
-                        Driver.Summ1Enabled = true;
-                        Driver.Summ1 = (decimal)p.Row_Summ;
+                        Driver.Summ1Enabled = false;
+                        //Driver.Summ1 = (decimal)p.Row_Summ;
                         result += p.Row_Summ;
-                        Driver.TaxValue1Enabled = false;
+                        Driver.TaxValueEnabled = false;
+                        Driver.Department = 1;
                         Driver.PaymentTypeSign = 4;
                         if (p.Row_Type == 1)
                             Driver.PaymentItemSign = 1;
                         else if (p.Row_Type == 2)
                             Driver.PaymentItemSign = 4;
-                        Driver.TaxValue = (decimal)p.NDS_Summ;
+                        //Driver.TaxValue = (decimal)p.NDS_Summ;
                         if (p.NDS == 18)
                         {
                             Driver.Tax1 = 1;
@@ -144,7 +148,7 @@ namespace PrintChequeService
                             Driver.Tax2 = 2;
                             Driver.Tax1 = 0;
                         }
-                        AddLog("Фиксация операции: ");
+                        AddLog($"Фиксация операции: Товар: {p.Name} Количество: {p.Quantity} Сумма: {p.Row_Summ}");
                         executeAndHandleError(Driver.FNOperation);
                     }
                     if (cheque.Payment == 1)
@@ -178,6 +182,8 @@ namespace PrintChequeService
                     Driver.TaxType = 1;
                     AddLog("Закрытие чека: ");
                     executeAndHandleError(Driver.FNCloseCheckEx);
+                    AddLog("Ожидание печати чека: ");
+                    executeAndHandleError(Driver.WaitForPrinting);
                     AddLog("Отрезка чека: ");
                     executeAndHandleError(Driver.CutCheck);
                     ChequeIsPrinted = true;
@@ -185,29 +191,10 @@ namespace PrintChequeService
                 else
                 {
                     Console.WriteLine($"ККМ в режиме {state}. Печать не доступна");
-                    ChequeIsPrinted = false;
                 }
             }
             else
                 AddLog("Нет подключения");
-        }
-
-        private void GetQRCode()
-        {
-            Driver.BarcodeType = 3;
-            Driver.BarCode = $"t={DateTime.Now}&s={Driver.Summ1}&" +
-                $"fn={Driver.SerialNumber}&i={Driver.DocumentNumber}&fp={Driver.FiscalSignAsString}&n={Driver.TaxType}";
-            Driver.BarCode = $@"http://check.egais.ru?id=000dede3-2553-4666a70a9e501bbe64df&dt=0612151654&cn=020000111111111";
-            AddLog($"Строка для QR-кода: {Driver.BarCode}");
-            Driver.BarcodeStartBlockNumber = 0;
-            Driver.BarcodeParameter1 = 0;
-            Driver.BarcodeParameter2 = 0;
-            Driver.BarcodeParameter3 = 5;
-            Driver.BarcodeParameter4 = 0;
-            Driver.BarcodeParameter5 = 0;
-            Driver.BarcodeAlignment = TBarcodeAlignment.baCenter;
-            AddLog("Загрузка и печать QR-кода: ");
-            executeAndHandleError(Driver.LoadAndPrint2DBarcode);
         }
     }
 }

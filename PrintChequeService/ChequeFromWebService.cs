@@ -23,13 +23,13 @@ namespace PrintChequeService
                         using (StreamReader sr = new StreamReader(stream))
                         {
                             data = sr.ReadToEnd();
-                            Console.WriteLine("Ответ получен");
+                            Console.Write($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} | ");
                         }
                     }
             }
             catch (Exception e)
             { 
-                Console.WriteLine(e.Message);
+                Console.Write(e.Message+" ");
                 data = "";
             }
             return data;
@@ -53,6 +53,7 @@ namespace PrintChequeService
                             id = int.Parse(b.Attribute("id").Value);
                         if (b.Attribute("tel") != null)
                             phone = b.Attribute("tel").Value;
+                        phone = "+7" + phone.Remove(0, 1);
                         if (b.Attribute("email") != null)
                             email = b.Attribute("email").Value;
                         if (b.Attribute("summa") != null)
@@ -98,7 +99,7 @@ namespace PrintChequeService
                         }
                     }
                 }
-                catch(Exception e) { Console.WriteLine(e.Message); }
+                catch(Exception e) { Console.WriteLine("Парсинг XML: " + e.Message); }
             }
             Console.WriteLine($"Чеков получено: {cheques.Count}");
             return cheques;

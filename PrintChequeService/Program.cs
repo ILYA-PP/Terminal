@@ -53,7 +53,6 @@ namespace PrintChequeService
                     Console.WriteLine("Ожидание чека...");
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
-            Thread.CurrentThread.Join();
         }
     }
 }
