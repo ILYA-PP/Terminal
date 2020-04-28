@@ -17,15 +17,14 @@ namespace PrintChequeService
                 Console.WriteLine("Отправка запроса на сервер: http://sert.godovalov.ru/webreport/execsp?spName=megamakler.dbo.api_bill_print&spOut=result");
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://sert.godovalov.ru/webreport/execsp?spName=megamakler.dbo.api_bill_print&spOut=result");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                if(response.StatusCode == HttpStatusCode.OK)
-                    using (Stream stream = response.GetResponseStream())
+                using (Stream stream = response.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
                     {
-                        using (StreamReader sr = new StreamReader(stream))
-                        {
-                            data = sr.ReadToEnd();
-                            Console.Write($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} | ");
-                        }
+                        data = reader.ReadToEnd();
+                        Console.Write($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} | ");
                     }
+                }
             }
             catch (Exception e)
             { 
@@ -59,8 +58,7 @@ namespace PrintChequeService
                         if (b.Attribute("summa") != null)
                             summa = double.Parse(b.Attribute("summa").Value);
                         if (b.Attribute("payment") != null)
-                            payment = int.Parse(b.Attribute("payment").Value);
-
+                            payment = int.Parse(b.Attribute("payment").Value); 
                         cheque = new Cheque(id, phone, email, summa, payment);
                         foreach (var p in b.Elements())
                         {
