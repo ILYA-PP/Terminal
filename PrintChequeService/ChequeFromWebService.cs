@@ -8,7 +8,7 @@ namespace PrintChequeService
 {
     class ChequeFromWebService
     {
-        private static List<int> PrintedCheques = new List<int>();
+        private static Dictionary<int, bool> PrintedCheques = new Dictionary<int, bool>();
         private static List<int> NotMarkedCheques = new List<int>();
         public static List<Cheque> GetCheque()
         {
@@ -24,7 +24,7 @@ namespace PrintChequeService
                     List<Cheque> temp = new List<Cheque>();
                     temp.AddRange(data.Cheques);
                     foreach (Cheque c in temp)
-                        if (PrintedCheques.Contains(c.ID))
+                        if (PrintedCheques.ContainsKey(c.ID))
                             data.Cheques.Remove(c);
                     Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} " +
                         $"| Чеков получено: {data.Cheques.Count}");
@@ -42,13 +42,19 @@ namespace PrintChequeService
         {
             try
             {
-                Console.WriteLine("Отправка запроса на сервер: ");
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{id}");
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} ");
-                PrintedCheques.Add(id);//сохранение id напечатанных чеков
-                if (response.StatusCode != HttpStatusCode.OK)
-                    NotMarkedCheques.Add(id);
+                PrintedCheques.Add(id, false);//сохранение id напечатанных чеков
+                foreach(int i in PrintedCheques.Keys)
+                {
+                    if (!PrintedCheques[i])
+                    {
+                        Console.WriteLine("Отправка запроса на сервер: ");
+                        HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{id}");
+                        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                        Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} ");
+                        if (response.StatusCode == HttpStatusCode.OK)
+                            PrintedCheques[i] = true;
+                    }
+                }
             }
             catch (Exception e)
             {
