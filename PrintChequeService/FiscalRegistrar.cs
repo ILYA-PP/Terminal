@@ -1,6 +1,6 @@
 ﻿using DrvFRLib;
-using System.Configuration;
 using System;
+using System.Configuration;
 
 namespace PrintChequeService
 {
@@ -102,7 +102,7 @@ namespace PrintChequeService
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
-            if (Driver.Connect() == 0)
+            if (CheckConnect() == 0)
             {
                 prepareCheque();
                 Driver.GetECRStatus();
@@ -189,9 +189,7 @@ namespace PrintChequeService
                     ChequeIsPrinted = true;
                 }
                 else
-                {
                     Console.WriteLine($"ККМ в режиме {state}. Печать не доступна");
-                }
             }
             else
                 AddLog("Нет подключения");

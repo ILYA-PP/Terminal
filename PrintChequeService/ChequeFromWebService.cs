@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace PrintChequeService
@@ -10,7 +9,7 @@ namespace PrintChequeService
     class ChequeFromWebService
     {
         private static List<int> PrintedCheques = new List<int>();
-        public static List<Cheque> GetXml()
+        public static List<Cheque> GetCheque()
         {
             bills data = null;
             try
@@ -34,7 +33,7 @@ namespace PrintChequeService
             }
             catch (Exception e)
             { 
-                Console.Write(e.Message+" ");
+                Console.Write($"Ошибка при получении данных с сервера: {e.Message} ");
                 data.Cheques = null;
             }
             return data.Cheques;

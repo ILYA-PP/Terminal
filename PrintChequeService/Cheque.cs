@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
 namespace PrintChequeService
 {
@@ -30,14 +26,5 @@ namespace PrintChequeService
         public int Payment { get; set; }
         [XmlElement("good")]
         public Product[] Products { get; set; }
-        //public Cheque(int id, string p, string e, double s, int pay)
-        //{
-        //    ID = id;
-        //    Phone = p;
-        //    Email = e;
-        //    Summa = s;
-        //    Payment = pay;
-        //    Products = new List<Product>();
-        //}
     }
 }

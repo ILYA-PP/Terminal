@@ -28,7 +28,7 @@ namespace PrintChequeService
             Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-US");
             try
             {
-                var cheque = ChequeFromWebService.GetXml();
+                var cheque = ChequeFromWebService.GetCheque();
                 Console.WriteLine(cheque[0].Phone);
                 if(cheque.Count > 0)
                 {
