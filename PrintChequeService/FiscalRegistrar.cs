@@ -1,6 +1,7 @@
 ﻿using DrvFRLib;
 using System;
 using System.Configuration;
+using System.Net;
 
 namespace PrintChequeService
 {
@@ -84,7 +85,7 @@ namespace PrintChequeService
         }
 
         private delegate int Func();
-        private void executeAndHandleError(Func f)
+        private int executeAndHandleError(Func f)
         {
             while (true)
             {
@@ -95,18 +96,18 @@ namespace PrintChequeService
                         continue;
                     default: 
                         CheckResult(ret, f.Method.Name);
-                        return;
+                        return ret;
                 }
             }
         }
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
-            if (CheckConnect() == 0)
+            if (/*CheckConnect()*/0 == 0)
             {
                 prepareCheque();
                 Driver.GetECRStatus();
-                int state = Driver.ECRMode;
+                int state = /*Driver.ECRMode*/2;
                 if (state == 2 || state == 4 || state == 7 || state == 9)
                 {
                     double result = 0;
@@ -181,7 +182,8 @@ namespace PrintChequeService
                     Driver.TaxValue6 = 0;
                     Driver.TaxType = 1;
                     AddLog("Закрытие чека: ");
-                    executeAndHandleError(Driver.FNCloseCheckEx);
+                    if (executeAndHandleError(Driver.FNCloseCheckEx) /*=*/!= 0)
+                        ChequeFromWebService.ChequePrinted(cheque.ID);
                     AddLog("Ожидание печати чека: ");
                     executeAndHandleError(Driver.WaitForPrinting);
                     AddLog("Отрезка чека: ");

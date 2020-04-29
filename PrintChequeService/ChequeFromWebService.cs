@@ -9,6 +9,7 @@ namespace PrintChequeService
     class ChequeFromWebService
     {
         private static List<int> PrintedCheques = new List<int>();
+        private static List<int> NotMarkedCheques = new List<int>();
         public static List<Cheque> GetCheque()
         {
             bills data = null;
@@ -25,8 +26,6 @@ namespace PrintChequeService
                     foreach (Cheque c in temp)
                         if (PrintedCheques.Contains(c.ID))
                             data.Cheques.Remove(c);
-                        else
-                            PrintedCheques.Add(c.ID);
                     Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} " +
                         $"| Чеков получено: {data.Cheques.Count}");
                 }
@@ -37,6 +36,24 @@ namespace PrintChequeService
                 data.Cheques = null;
             }
             return data.Cheques;
+        }
+
+        public static void ChequePrinted(int id)
+        {
+            try
+            {
+                Console.WriteLine("Отправка запроса на сервер: ");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{id}");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} ");
+                PrintedCheques.Add(id);//сохранение id напечатанных чеков
+                if (response.StatusCode != HttpStatusCode.OK)
+                    NotMarkedCheques.Add(id);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка при отправке данных на сервер: {e.Message}");
+            }
         }
     }
 }

@@ -29,11 +29,10 @@ namespace PrintChequeService
             try
             {
                 var cheque = ChequeFromWebService.GetCheque();
-                Console.WriteLine(cheque[0].Phone);
                 if(cheque.Count > 0)
                 {
                     fR = new FiscalRegistrar();
-                    while(fR.CheckConnect() != 0)
+                    while(/*fR.CheckConnect()*/0 != 0)
                     {
                         Console.WriteLine("Ожидание подключения...");
                         fR.Connect();
