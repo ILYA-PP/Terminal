@@ -9,7 +9,6 @@ namespace PrintChequeService
     class ChequeFromWebService
     {
         private static Dictionary<int, bool> PrintedCheques = new Dictionary<int, bool>();
-        private static List<int> NotMarkedCheques = new List<int>();
         public static List<Cheque> GetCheque()
         {
             bills data = null;
@@ -38,11 +37,11 @@ namespace PrintChequeService
             return data.Cheques;
         }
 
-        public static void ChequePrinted(int id)
+        public static void ChequePrinted(object id)
         {
             try
             {
-                PrintedCheques.Add(id, false);//сохранение id напечатанных чеков
+                PrintedCheques.Add((int)id, false);//сохранение id напечатанных чеков
                 foreach(int i in PrintedCheques.Keys)
                 {
                     if (!PrintedCheques[i])

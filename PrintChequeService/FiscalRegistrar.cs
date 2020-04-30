@@ -2,6 +2,8 @@
 using System;
 using System.Configuration;
 using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PrintChequeService
 {
@@ -101,13 +103,13 @@ namespace PrintChequeService
             }
         }
         //печать чека
-        public void PrintCheque(Cheque cheque)
+        public async void PrintChequeAsync(Cheque cheque)
         {
-            if (/*CheckConnect()*/0 == 0)
+            if (CheckConnect() == 0)
             {
                 prepareCheque();
                 Driver.GetECRStatus();
-                int state = /*Driver.ECRMode*/2;
+                int state = Driver.ECRMode;
                 if (state == 2 || state == 4 || state == 7 || state == 9)
                 {
                     double result = 0;
@@ -182,8 +184,11 @@ namespace PrintChequeService
                     Driver.TaxValue6 = 0;
                     Driver.TaxType = 1;
                     AddLog("Закрытие чека: ");
-                    if (executeAndHandleError(Driver.FNCloseCheckEx) /*=*/!= 0)
-                        ChequeFromWebService.ChequePrinted(cheque.ID);
+                    if (executeAndHandleError(Driver.FNCloseCheckEx) == 0)
+                    {
+                        Thread t = new Thread(new ParameterizedThreadStart(ChequeFromWebService.ChequePrinted));
+                        t.Start(cheque.ID);
+                    }
                     AddLog("Ожидание печати чека: ");
                     executeAndHandleError(Driver.WaitForPrinting);
                     AddLog("Отрезка чека: ");
