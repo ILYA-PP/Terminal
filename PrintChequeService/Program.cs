@@ -43,7 +43,7 @@ namespace PrintChequeService
                         while (!fR.ChequeIsPrinted)
                         {
                             Console.WriteLine("Печать чека");
-                            fR.PrintChequeAsync(c);
+                            fR.PrintCheque(c);
                             Thread.Sleep(1000);
                         }
                         fR.ChequeIsPrinted = false;

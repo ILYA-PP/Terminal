@@ -61,7 +61,7 @@ namespace PrintChequeService
                     Timeout = int.Parse(driverData["Timeout"]),
                     Password = int.Parse(driverData["Password"])
                 };
-                AddLog($"Подключение к фискальному регистратору (IP = {Driver.IPAddress}): ");
+                AddLog($"Подключение к ККМ (IP = {Driver.IPAddress}): ");
                 executeAndHandleError(Driver.Connect);
                 ChequeIsPrinted = false;
                 Driver.WaitForPrintingDelay = 20;
@@ -103,7 +103,7 @@ namespace PrintChequeService
             }
         }
         //печать чека
-        public async void PrintChequeAsync(Cheque cheque)
+        public void PrintCheque(Cheque cheque)
         {
             if (CheckConnect() == 0)
             {
