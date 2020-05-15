@@ -49,6 +49,12 @@ namespace PrintChequeService
                 PrintedCheques.Add(id);//сохранение id напечатанных чеков
                 if (response.StatusCode != HttpStatusCode.OK)
                     NotMarkedCheques.Add(id);
+                else
+                    NotMarkedCheques.Remove(id);
+                var temp = new List<int>();
+                temp.AddRange(NotMarkedCheques);
+                foreach (int i in temp)
+                    ChequePrinted(i);
             }
             catch (Exception e)
             {

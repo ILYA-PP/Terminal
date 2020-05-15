@@ -103,11 +103,11 @@ namespace PrintChequeService
         //печать чека
         public void PrintCheque(Cheque cheque)
         {
-            if (/*CheckConnect()*/0 == 0)
+            if (CheckConnect() == 0)
             {
                 prepareCheque();
                 Driver.GetECRStatus();
-                int state = /*Driver.ECRMode*/2;
+                int state = Driver.ECRMode;
                 if (state == 2 || state == 4 || state == 7 || state == 9)
                 {
                     double result = 0;
@@ -182,13 +182,15 @@ namespace PrintChequeService
                     Driver.TaxValue6 = 0;
                     Driver.TaxType = 1;
                     AddLog("Закрытие чека: ");
-                    if (executeAndHandleError(Driver.FNCloseCheckEx) /*=*/!= 0)
+                    if (executeAndHandleError(Driver.FNCloseCheckEx) == 0)
+                    {
+                        ChequeIsPrinted = true;
                         ChequeFromWebService.ChequePrinted(cheque.ID);
+                    }
                     AddLog("Ожидание печати чека: ");
                     executeAndHandleError(Driver.WaitForPrinting);
                     AddLog("Отрезка чека: ");
                     executeAndHandleError(Driver.CutCheck);
-                    ChequeIsPrinted = true;
                 }
                 else
                     Console.WriteLine($"ККМ в режиме {state}. Печать не доступна");

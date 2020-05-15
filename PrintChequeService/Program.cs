@@ -32,7 +32,7 @@ namespace PrintChequeService
                 if(cheque.Count > 0)
                 {
                     fR = new FiscalRegistrar();
-                    while(/*fR.CheckConnect()*/0 != 0)
+                    while(fR.CheckConnect() != 0)
                     {
                         Console.WriteLine("Ожидание подключения...");
                         fR.Connect();
@@ -40,6 +40,7 @@ namespace PrintChequeService
                     }
                     foreach (var c in cheque)
                     {
+                        //убрать цикл
                         while (!fR.ChequeIsPrinted)
                         {
                             Console.WriteLine("Печать чека");
