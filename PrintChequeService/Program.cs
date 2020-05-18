@@ -40,13 +40,8 @@ namespace PrintChequeService
                     }
                     foreach (var c in cheque)
                     {
-                        while (!fR.ChequeIsPrinted)
-                        {
-                            Console.WriteLine("Печать чека");
-                            fR.PrintCheque(c);
-                            Thread.Sleep(1000);
-                        }
-                        fR.ChequeIsPrinted = false;
+                        Console.WriteLine("Печать чека");
+                        fR.PrintCheque(c);
                     }
                 }
                 else

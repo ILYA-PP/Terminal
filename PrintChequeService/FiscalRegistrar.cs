@@ -186,14 +186,14 @@ namespace PrintChequeService
                     AddLog("Закрытие чека: ");
                     if (executeAndHandleError(Driver.FNCloseCheckEx) == 0)
                     {
+                        AddLog("Ожидание печати чека: ");
+                        executeAndHandleError(Driver.WaitForPrinting);
                         Thread t = new Thread(new ParameterizedThreadStart(ChequeFromWebService.ChequePrinted));
                         t.Start(cheque.ID);
+                        AddLog("Отрезка чека: ");
+                        executeAndHandleError(Driver.CutCheck);
+                        ChequeIsPrinted = true;
                     }
-                    AddLog("Ожидание печати чека: ");
-                    executeAndHandleError(Driver.WaitForPrinting);
-                    AddLog("Отрезка чека: ");
-                    executeAndHandleError(Driver.CutCheck);
-                    ChequeIsPrinted = true;
                 }
                 else
                     Console.WriteLine($"ККМ в режиме {state}. Печать не доступна");

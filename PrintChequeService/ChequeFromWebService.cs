@@ -39,25 +39,25 @@ namespace PrintChequeService
 
         public static void ChequePrinted(object id)
         {
-            try
+            PrintedCheques.Add((int)id, false);//сохранение id напечатанных чеков
+            foreach(int i in PrintedCheques.Keys)
             {
-                PrintedCheques.Add((int)id, false);//сохранение id напечатанных чеков
-                foreach(int i in PrintedCheques.Keys)
+                if (!PrintedCheques[i])
                 {
-                    if (!PrintedCheques[i])
+                    try
                     {
                         Console.WriteLine("Отправка запроса на сервер: ");
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{id}");
                         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                        Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} ");
+                        Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription}");
                         if (response.StatusCode == HttpStatusCode.OK)
                             PrintedCheques[i] = true;
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Ошибка при отправке данных на сервер: {e.Message}");
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Ошибка при отправке данных на сервер: {e.Message}");
             }
         }
     }
