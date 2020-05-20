@@ -2,6 +2,8 @@
 using System;
 using System.Configuration;
 using System.Net;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace PrintChequeService
 {
@@ -9,11 +11,6 @@ namespace PrintChequeService
     {
         public bool ChequeIsPrinted { get; set; }
         private DrvFR Driver { get; set; }
-
-        public FiscalRegistrar()
-        {
-            Connect();
-        }
 
         private void prepareCheque()
         {
@@ -59,7 +56,7 @@ namespace PrintChequeService
                     Timeout = int.Parse(driverData["Timeout"]),
                     Password = int.Parse(driverData["Password"])
                 };
-                AddLog($"Подключение к фискальному регистратору (IP = {Driver.IPAddress}): ");
+                AddLog($"Подключение к ККМ (IP = {Driver.IPAddress}): ");
                 executeAndHandleError(Driver.Connect);
                 ChequeIsPrinted = false;
                 Driver.WaitForPrintingDelay = 20;
@@ -138,8 +135,10 @@ namespace PrintChequeService
                             Driver.PaymentItemSign = 1;
                         else if (p.Row_Type == 2)
                             Driver.PaymentItemSign = 4;
-                        //Driver.TaxValue = (decimal)p.NDS_Summ;
-                        if (p.NDS == 18)
+                        //возможна ошибка при проведении операции
+                        Driver.TaxValueEnabled = true;
+                        Driver.TaxValue = (decimal)p.NDS_Summ;
+                        if (p.NDS == 20)
                         {
                             Driver.Tax1 = 1;
                             Driver.Tax2 = 0;
@@ -149,7 +148,7 @@ namespace PrintChequeService
                             Driver.Tax2 = 2;
                             Driver.Tax1 = 0;
                         }
-                        AddLog($"Фиксация операции: Товар: {p.Name} Количество: {p.Quantity} Сумма: {p.Row_Summ}");
+                        AddLog($"Фиксация операции: Товар: {p.Name} Количество: {p.Quantity} НДС: {p.NDS} Сумма: {p.Row_Summ}");
                         executeAndHandleError(Driver.FNOperation);
                     }
                     if (cheque.Payment == 1)
@@ -176,6 +175,8 @@ namespace PrintChequeService
                     Driver.Summ14 = 0;
                     Driver.Summ15 = 0;
                     Driver.Summ16 = 0;
+                    Driver.TaxValue1 = 0;
+                    Driver.TaxValue2 = 0;
                     Driver.TaxValue3 = 0;
                     Driver.TaxValue4 = 0;
                     Driver.TaxValue5 = 0;
@@ -184,13 +185,14 @@ namespace PrintChequeService
                     AddLog("Закрытие чека: ");
                     if (executeAndHandleError(Driver.FNCloseCheckEx) == 0)
                     {
+                        AddLog("Ожидание печати чека: ");
+                        executeAndHandleError(Driver.WaitForPrinting);
+                        Thread t = new Thread(new ParameterizedThreadStart(ChequeFromWebService.ChequePrinted));
+                        t.Start(cheque.ID);
+                        AddLog("Отрезка чека: ");
+                        executeAndHandleError(Driver.CutCheck);
                         ChequeIsPrinted = true;
-                        ChequeFromWebService.ChequePrinted(cheque.ID);
                     }
-                    AddLog("Ожидание печати чека: ");
-                    executeAndHandleError(Driver.WaitForPrinting);
-                    AddLog("Отрезка чека: ");
-                    executeAndHandleError(Driver.CutCheck);
                 }
                 else
                     Console.WriteLine($"ККМ в режиме {state}. Печать не доступна");

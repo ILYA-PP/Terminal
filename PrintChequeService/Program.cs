@@ -6,7 +6,8 @@ namespace PrintChequeService
 {
     class Program
     {
-        private static FiscalRegistrar fR;
+        private static FiscalRegistrar fR = new FiscalRegistrar();
+        private static object locker = new object();
         static void Main(string[] args)
         {
             var driverData = ConfigurationManager.AppSettings;
@@ -29,29 +30,25 @@ namespace PrintChequeService
             try
             {
                 var cheque = ChequeFromWebService.GetCheque();
-                if(cheque.Count > 0)
+                lock (locker) 
                 {
-                    fR = new FiscalRegistrar();
-                    while(fR.CheckConnect() != 0)
+                    if (cheque.Count > 0)
                     {
-                        Console.WriteLine("Ожидание подключения...");
-                        fR.Connect();
-                        Thread.Sleep(1000);
-                    }
-                    foreach (var c in cheque)
-                    {
-                        //убрать цикл
-                        while (!fR.ChequeIsPrinted)
+                        while (fR.CheckConnect() != 0)
+                        {
+                            Console.WriteLine("Ожидание подключения...");
+                            fR.Connect();
+                            Thread.Sleep(1000);
+                        }
+                        foreach (var c in cheque)
                         {
                             Console.WriteLine("Печать чека");
                             fR.PrintCheque(c);
-                            Thread.Sleep(1000);
                         }
-                        fR.ChequeIsPrinted = false;
                     }
+                    else
+                        Console.WriteLine("Ожидание чека...");
                 }
-                else
-                    Console.WriteLine("Ожидание чека...");
             }
             catch (Exception e) { Console.WriteLine(e.Message); }
         }
