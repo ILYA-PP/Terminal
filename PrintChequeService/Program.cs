@@ -32,7 +32,7 @@ namespace PrintChequeService
                 var cheque = ChequeFromWebService.GetCheque();
                 lock (locker) 
                 {
-                    if (cheque.Count > 0)
+                    if (cheque != null && cheque.Count > 0)
                     {
                         while (fR.CheckConnect() != 0)
                         {
@@ -45,6 +45,7 @@ namespace PrintChequeService
                             Console.WriteLine("Печать чека");
                             fR.PrintCheque(c);
                         }
+                        fR.Disconnect();
                     }
                     else
                         Console.WriteLine("Ожидание чека...");

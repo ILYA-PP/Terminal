@@ -25,9 +25,9 @@ namespace PrintChequeService
                     foreach (Cheque c in temp)
                         if (PrintedCheques.ContainsKey(c.ID))
                             data.Cheques.Remove(c);
-                    IsValide(data.Cheques); //проверка чеков на валидность
                     Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription} " +
                         $"| Чеков получено: {data.Cheques.Count}");
+                    IsValide(data.Cheques); //проверка чеков на валидность
                 }
             }
             catch (Exception e)
@@ -41,13 +41,13 @@ namespace PrintChequeService
         public static void ChequePrinted(object id)
         {
             PrintedCheques.Add((int)id, false);//сохранение id напечатанных чеков
-            foreach(int i in PrintedCheques.Keys)
+            foreach (int i in PrintedCheques.Keys)
             {
                 if (!PrintedCheques[i])
                 {
                     try
                     {
-                        Console.WriteLine("Отправка запроса на сервер: ");
+                        Console.WriteLine($"Отправка запроса на сервер: {id}");
                         HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{id}");
                         HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                         Console.WriteLine($"Ответ сервера: {response.StatusCode} - {response.StatusDescription}");

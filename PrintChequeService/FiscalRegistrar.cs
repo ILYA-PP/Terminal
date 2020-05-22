@@ -9,7 +9,6 @@ namespace PrintChequeService
 {
     class FiscalRegistrar
     {
-        public bool ChequeIsPrinted { get; set; }
         private DrvFR Driver { get; set; }
 
         private void prepareCheque()
@@ -35,6 +34,11 @@ namespace PrintChequeService
             }
             executeAndHandleError(Driver.WaitForPrinting);
         }
+        public void Disconnect()
+        {
+            AddLog("Отключение от ККТ: ");
+            executeAndHandleError(Driver.Disconnect);
+        }
 
         public int CheckConnect()
         {
@@ -58,7 +62,6 @@ namespace PrintChequeService
                 };
                 AddLog($"Подключение к ККМ (IP = {Driver.IPAddress}): ");
                 executeAndHandleError(Driver.Connect);
-                ChequeIsPrinted = false;
                 Driver.WaitForPrintingDelay = 20;
             }
             catch (Exception ex)
@@ -66,7 +69,7 @@ namespace PrintChequeService
                 AddLog(ex.Message);
             }
         }
-        //вывод, возвращаемых фискальником сообщений, в поле формы
+        //вывод, возвращаемых фискальником сообщений
         private void AddLog(string mes)
         {
             Console.Write(mes + " ");
@@ -121,7 +124,8 @@ namespace PrintChequeService
                     foreach (Product p in cheque.Products)
                     {
                         //add product
-                        Driver.CheckType = 1;
+                        Driver.CheckType = 0
+                            ;
                         Driver.StringForPrinting = p.Name;
                         Driver.Price = (decimal)p.Price;
                         Driver.Quantity = p.Quantity;
@@ -135,19 +139,14 @@ namespace PrintChequeService
                             Driver.PaymentItemSign = 1;
                         else if (p.Row_Type == 2)
                             Driver.PaymentItemSign = 4;
-                        //возможна ошибка при проведении операции
-                        Driver.TaxValueEnabled = true;
-                        Driver.TaxValue = (decimal)p.NDS_Summ;
+                        Driver.Tax1 = 0;
                         if (p.NDS == 20)
-                        {
                             Driver.Tax1 = 1;
-                            Driver.Tax2 = 0;
-                        }
                         else if (p.NDS == 10)
-                        {
-                            Driver.Tax2 = 2;
-                            Driver.Tax1 = 0;
-                        }
+                            Driver.Tax1 = 2;
+                        Driver.Tax2 = 0;
+                        Driver.Tax3 = 0;
+                        Driver.Tax4 = 0;
                         AddLog($"Фиксация операции: Товар: {p.Name} Количество: {p.Quantity} НДС: {p.NDS} Сумма: {p.Row_Summ}");
                         executeAndHandleError(Driver.FNOperation);
                     }
@@ -191,7 +190,6 @@ namespace PrintChequeService
                         t.Start(cheque.ID);
                         AddLog("Отрезка чека: ");
                         executeAndHandleError(Driver.CutCheck);
-                        ChequeIsPrinted = true;
                     }
                 }
                 else
