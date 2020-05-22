@@ -8,6 +8,7 @@ namespace PrintChequeService
 {
     class ChequeFromWebService
     {
+        //словарь для хранения id напечатанных чеков и признака, что он отмечен на сервере
         private static Dictionary<int, bool> PrintedCheques = new Dictionary<int, bool>();
         public static List<Cheque> GetCheque()
         {
@@ -19,6 +20,7 @@ namespace PrintChequeService
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
                 using (Stream stream = response.GetResponseStream())
                 {
+                    //десериализация полученных чеков в объект bills
                     data = (bills)new XmlSerializer(typeof(bills)).Deserialize(stream);
                     List<Cheque> temp = new List<Cheque>();
                     temp.AddRange(data.Cheques);
@@ -61,7 +63,7 @@ namespace PrintChequeService
                 }
             }
         }
-
+        //метод проверки чеков на валидность
         private static void IsValide(List<Cheque> cheques)
         {
             double result1 = 0, result2 = 0, ndsSumm = 0;

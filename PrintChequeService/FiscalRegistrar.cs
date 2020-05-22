@@ -10,7 +10,7 @@ namespace PrintChequeService
     class FiscalRegistrar
     {
         private DrvFR Driver { get; set; }
-
+        //проверка состояния ККТ перед печатью
         private void prepareCheque()
         {
             Driver.Password = 30;
@@ -42,7 +42,7 @@ namespace PrintChequeService
 
         public int CheckConnect()
         {
-            return Driver.Connect();
+            return executeAndHandleError(Driver.Connect);
         }
         //подключение к фискальному регистратору
         public void Connect()
@@ -74,7 +74,7 @@ namespace PrintChequeService
         {
             Console.Write(mes + " ");
         }
-
+        //вывод возникающих ошибок
         private void CheckResult(int code, string n)
         {
             if (code != 0)
@@ -85,6 +85,7 @@ namespace PrintChequeService
         }
 
         private delegate int Func();
+        //проверка результата работы метода драйвера ККТ
         private int executeAndHandleError(Func f)
         {
             while (true)
@@ -124,8 +125,7 @@ namespace PrintChequeService
                     foreach (Product p in cheque.Products)
                     {
                         //add product
-                        Driver.CheckType = 0
-                            ;
+                        Driver.CheckType = 0;
                         Driver.StringForPrinting = p.Name;
                         Driver.Price = (decimal)p.Price;
                         Driver.Quantity = p.Quantity;
@@ -187,7 +187,7 @@ namespace PrintChequeService
                         AddLog("Ожидание печати чека: ");
                         executeAndHandleError(Driver.WaitForPrinting);
                         Thread t = new Thread(new ParameterizedThreadStart(ChequeFromWebService.ChequePrinted));
-                        t.Start(cheque.ID);
+                        t.Start(cheque.ID);//отметка чека на сервере в новом потоке
                         AddLog("Отрезка чека: ");
                         executeAndHandleError(Driver.CutCheck);
                     }
